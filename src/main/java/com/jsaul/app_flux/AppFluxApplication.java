@@ -22,14 +22,15 @@ public class AppFluxApplication implements CommandLineRunner { // CommandLineRun
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Flux<User> users = Flux.just("Andres", "Juan", "Ramon", "Pedro", "Maria", "Diego")
-			.map(name -> new User(name.toUpperCase(), null))
+		Flux<User> users = Flux.just("Andres Fulan", "Juan Vatividad", "Ramon Sultan", "Pedro Lopez", "Bruce Lee", "Bruce Willis")
+			.map(fullName -> new User(fullName.split(" ")[0].toUpperCase(), fullName.split(" ")[1].toUpperCase()))
+			.filter(user -> user.getName().equalsIgnoreCase("bruce"))
 			.doOnNext(user -> {
 				if (user == null) {
 					throw new RuntimeException("Usuarios no pueden ser vacios.");
 				}
 
-				System.out.println(user.getName());
+				System.out.println(user.getName().concat(" ").concat(user.getLastName()));
 				
 			})
 			.map(u -> {
