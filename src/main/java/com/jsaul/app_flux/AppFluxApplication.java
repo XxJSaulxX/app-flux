@@ -6,6 +6,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.jsaul.app_flux.models.User;
+
 import reactor.core.publisher.Flux;
 
 @SpringBootApplication
@@ -20,26 +22,32 @@ public class AppFluxApplication implements CommandLineRunner { // CommandLineRun
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Flux<String> nombres = Flux.just("Andres", "Juan", "Ramon", "Pedro", "Maria", "Diego")
-			.doOnNext(element -> {
-				if (element.isEmpty()) {
-					throw new RuntimeException("Nombres no pueden ser vacios.");
+		Flux<User> users = Flux.just("Andres", "Juan", "Ramon", "Pedro", "Maria", "Diego")
+			.map(name -> new User(name.toUpperCase(), null))
+			.doOnNext(user -> {
+				if (user == null) {
+					throw new RuntimeException("Usuarios no pueden ser vacios.");
 				}
 
-				System.out.println(element);
+				System.out.println(user.getName());
 				
+			})
+			.map(u -> {
+				String name = u.getName().toLowerCase();
+				u.setName(name);
+				return u;
 			});
 
-			nombres.subscribe(
-				e -> log.info(e),
-				error -> log.error(error.getMessage()),
-				new Runnable() {
-					@Override
-					public void run() {
-						log.info("Ha finalizado la ejecucion del observable con exito.");
-					}
+		users.subscribe(
+			u -> log.info(u.toString()),
+			error -> log.error(error.getMessage()),
+			new Runnable() {
+				@Override
+				public void run() {
+					log.info("Ha finalizado la ejecucion del observable con exito.");
 				}
-			);
+			}
+		);
 
 
 	}
