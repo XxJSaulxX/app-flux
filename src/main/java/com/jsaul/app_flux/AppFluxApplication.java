@@ -36,6 +36,9 @@ public class AppFluxApplication implements CommandLineRunner { // CommandLineRun
 		exampleContrapersion();
 	}
 
+	/**
+	 * Limtar el Flujo de datos
+	 */
 	public void exampleContrapersion() {
 		Flux.range(1, 10)
 			.log() // loguea el flujo de datos
